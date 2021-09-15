@@ -28,7 +28,9 @@ class _MapWithPopupsState extends State<MapWithPopups> {
   late List<Marker> _markers;
 
   /// Used to trigger showing/hiding of popups.
-  final PopupController _popupLayerController = PopupController();
+  final PopupController _popupLayerController = PopupController(
+    showAll: true,
+  );
 
   @override
   void initState() {
@@ -121,6 +123,7 @@ class _MapWithPopupsState extends State<MapWithPopups> {
         center: LatLng(44.421, 10.404),
         onTap: (_) => _popupLayerController
             .hidePopup(), // Hide popup when the map is tapped.
+            
       ),
       children: [
         TileLayerWidget(

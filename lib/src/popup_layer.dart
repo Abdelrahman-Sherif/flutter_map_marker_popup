@@ -20,6 +20,7 @@ class PopupLayer extends StatefulWidget {
   final PopupController popupController;
   final PopupAnimation? popupAnimation;
   final bool markerRotate;
+  final List<Marker>? markers;
 
   const PopupLayer({
     required this.mapState,
@@ -28,6 +29,7 @@ class PopupLayer extends StatefulWidget {
     required this.popupSnap,
     required this.popupController,
     this.popupAnimation,
+    this.markers,
     required this.markerRotate,
     Key? key,
   }) : super(key: key);
@@ -64,6 +66,7 @@ class _PopupLayerState extends State<PopupLayer> {
             mapState: widget.mapState,
             popupController: widget.popupController,
             snap: widget.popupSnap,
+            markers: widget.markers,
             popupBuilder: widget.popupBuilder,
             markerRotate: widget.markerRotate,
           );
@@ -73,6 +76,7 @@ class _PopupLayerState extends State<PopupLayer> {
             popupController: widget.popupController,
             snap: widget.popupSnap,
             popupBuilder: widget.popupBuilder,
+            markers: widget.markers,
             popupAnimation: popupAnimation,
             markerRotate: widget.markerRotate,
           );

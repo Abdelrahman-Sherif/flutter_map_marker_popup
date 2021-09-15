@@ -11,6 +11,8 @@ class PopupController {
   /// one. This is for internal use.
   MarkerWithKey? selectedMarkerWithKey;
 
+  bool showAll;
+
   /// The [Marker] for which a popup is currently showing if there is one.
   Marker? get selectedMarker => selectedMarkerWithKey?.marker;
 
@@ -20,8 +22,10 @@ class PopupController {
   /// the popup is currently showing if there is a popup showing.
   ///
   /// To show a popup immediately set the [initiallySelectedMarker].
-  PopupController({Marker? initiallySelectedMarker})
-      : selectedMarkerWithKey = initiallySelectedMarker == null
+  PopupController({
+    Marker? initiallySelectedMarker,
+    this.showAll = false,
+  }) : selectedMarkerWithKey = initiallySelectedMarker == null
             ? null
             : MarkerWithKey(initiallySelectedMarker);
 

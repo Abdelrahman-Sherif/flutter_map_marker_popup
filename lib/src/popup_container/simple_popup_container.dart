@@ -16,6 +16,7 @@ class SimplePopupContainer extends StatefulWidget {
   final PopupSnap snap;
   final MapState mapState;
   final bool markerRotate;
+  final List<Marker>? markers;
 
   const SimplePopupContainer({
     required this.mapState,
@@ -23,6 +24,7 @@ class SimplePopupContainer extends StatefulWidget {
     required this.snap,
     required this.popupBuilder,
     required this.markerRotate,
+    this.markers,
     Key? key,
   }) : super(key: key);
 
@@ -60,12 +62,26 @@ class _SimplePopupContainerState extends State<SimplePopupContainer>
   Widget build(BuildContext context) {
     final _currentlySelected = _selectedMarkerWithKey;
 
-    if (_currentlySelected == null) return Container();
+    if (_currentlySelected == null && !popupController.showAll) {
+      return Container();
+    }
 
-    return inPosition(
-      _currentlySelected.marker,
-      popupWithStateKeepAlive(_currentlySelected, widget.popupBuilder),
-    );
+    if (popupController.showAll && widget.markers != null) {
+      popupController.showAll = false;
+      return Stack(
+        children: widget.markers!.map((e) {
+          return inPosition(
+            e,
+            popupWithStateKeepAlive(MarkerWithKey(e), widget.popupBuilder),
+          );
+        }).toList(),
+      );
+    } else {
+      return inPosition(
+        _currentlySelected!.marker,
+        popupWithStateKeepAlive(_currentlySelected, widget.popupBuilder),
+      );
+    }
   }
 
   @override

@@ -19,6 +19,7 @@ class AnimatedPopupContainer extends StatefulWidget {
   final MapState mapState;
   final PopupAnimation popupAnimation;
   final bool markerRotate;
+  final List<Marker>? markers;
 
   const AnimatedPopupContainer({
     required this.mapState,
@@ -27,6 +28,7 @@ class AnimatedPopupContainer extends StatefulWidget {
     required this.popupBuilder,
     required this.popupAnimation,
     required this.markerRotate,
+    this.markers,
     Key? key,
   }) : super(key: key);
 
@@ -67,8 +69,11 @@ class _AnimatedPopupContainerState extends State<AnimatedPopupContainer>
       removedItemBuilder: (marker, _, animation) =>
           _buildPopup(marker, animation, allowTap: false),
       duration: widget.popupAnimation.duration,
-      initialItems:
-          selectedMarkerWithKey == null ? [] : [selectedMarkerWithKey],
+      initialItems: popupController.showAll
+          ? widget.markers!.map((e) => MarkerWithKey(e)).toList()
+          : selectedMarkerWithKey == null
+              ? []
+              : [selectedMarkerWithKey],
     );
     _popupEventSubscription = widget.popupController.streamController!.stream
         .listen((PopupEvent popupEvent) => handleAction(popupEvent));
@@ -93,14 +98,35 @@ class _AnimatedPopupContainerState extends State<AnimatedPopupContainer>
     Animation<double> animation, {
     bool allowTap = true,
   }) {
-    Widget animatedPopup = FadeTransition(
-      opacity: animation.drive(CurveTween(curve: widget.popupAnimation.curve)),
-      child: popupWithStateKeepAlive(markerWithKey, widget.popupBuilder),
-    );
+    if (popupController.showAll && widget.markers != null) {
+      popupController.showAll = false;
+      return Stack(
+        children: widget.markers!.map((_) {
+          Widget animatedPopup = FadeTransition(
+            opacity:
+                animation.drive(CurveTween(curve: widget.popupAnimation.curve)),
+            child: popupWithStateKeepAlive(markerWithKey, widget.popupBuilder),
+          );
 
-    if (!allowTap) animatedPopup = IgnorePointer(child: animatedPopup);
+          if (!allowTap) animatedPopup = IgnorePointer(child: animatedPopup);
 
-    return inPosition(markerWithKey.marker, animatedPopup);
+          return inPosition(
+            markerWithKey.marker,
+            popupWithStateKeepAlive(markerWithKey, widget.popupBuilder),
+          );
+        }).toList(),
+      );
+    } else {
+      Widget animatedPopup = FadeTransition(
+        opacity:
+            animation.drive(CurveTween(curve: widget.popupAnimation.curve)),
+        child: popupWithStateKeepAlive(markerWithKey, widget.popupBuilder),
+      );
+
+      if (!allowTap) animatedPopup = IgnorePointer(child: animatedPopup);
+
+      return inPosition(markerWithKey.marker, animatedPopup);
+    }
   }
 
   @override
