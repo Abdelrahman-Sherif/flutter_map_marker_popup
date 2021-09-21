@@ -70,7 +70,9 @@ class _AnimatedPopupContainerState extends State<AnimatedPopupContainer>
           _buildPopup(marker, animation, allowTap: false),
       duration: widget.popupAnimation.duration,
       initialItems: popupController.showAll
-          ? widget.markers!.map((e) => MarkerWithKey(e)).toList()
+          ? widget.markers!
+              .map((e) => MarkerWithKey(e, Key(e.point.toString())))
+              .toList()
           : selectedMarkerWithKey == null
               ? []
               : [selectedMarkerWithKey],
