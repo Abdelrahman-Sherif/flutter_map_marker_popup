@@ -71,7 +71,11 @@ class _AnimatedPopupContainerState extends State<AnimatedPopupContainer>
       duration: widget.popupAnimation.duration,
       initialItems: popupController.showAll
           ? widget.markers!
-              .map((e) => MarkerWithKey(e, Key(e.point.toString())))
+              .map((e) => MarkerWithKey(
+                  e,
+                  Key(e.point.latitude.toString() +
+                      ' ' +
+                      e.point.longitude.toString())))
               .toList()
           : selectedMarkerWithKey == null
               ? []
